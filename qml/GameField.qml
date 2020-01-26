@@ -4,7 +4,6 @@ DragZoomItem {
     id: root
     x: (width - main_window.width) / (-2)
     y: (height - main_window.height) / (-2)
-    onXChanged: console.log(x, y)
     width: main_grid.width
     height: main_grid.height
 
@@ -18,9 +17,16 @@ DragZoomItem {
         Repeater {
             model: main_grid.max_tiles_amount
             delegate: LandTile {
+                tile_id: (index < 84) ? index : -1
+
                 Text {
+                    id: debug_text
                     text: index
                     anchors.centerIn: parent
+                    font {
+                        bold: true
+                        pixelSize: 25
+                    }
                 }
             }
         }

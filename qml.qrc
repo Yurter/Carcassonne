@@ -5,7 +5,6 @@
         <file>qml/LandTile.qml</file>
         <file>qml/Scoreboard.qml</file>
         <file>qml/DragZoomItem.qml</file>
-        <file>img/tiles/image_part_001.jpg</file>
         <file>img/tiles/image_part_002.jpg</file>
         <file>img/tiles/image_part_003.jpg</file>
         <file>img/tiles/image_part_004.jpg</file>
@@ -88,6 +87,7 @@
         <file>img/tiles/image_part_081.jpg</file>
         <file>img/tiles/image_part_082.jpg</file>
         <file>img/tiles/image_part_083.jpg</file>
-        <file>img/tiles/image_part_084.jpg</file>
+        <file>img/tiles/image_part_000.jpg</file>
+        <file>img/tiles/image_part_001.jpg</file>
     </qresource>
 </RCC>

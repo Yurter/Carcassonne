@@ -17,8 +17,8 @@ Item {
         property real m_y1: 0
         property real m_y2: 0
         property real m_x2: 0
-        property real m_zoom1: 1//0.5
-        property real m_zoom2: 1//0.5
+        property real m_zoom1: 1
+        property real m_zoom2: 1
         property real m_max: 2
         property real m_min: 0.5
 
