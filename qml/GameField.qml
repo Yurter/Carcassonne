@@ -13,7 +13,8 @@ DragZoomItem {
 
     Grid {
         id: main_grid
-        readonly property int max_tiles_amount: 2500
+        readonly property int max_tiles_amount: 441
+        readonly property int start_tile_index: max_tiles_amount / 2
         columns: Math.sqrt(max_tiles_amount)
         rows: columns
         transform: Scale { id: main_grid_scale }
@@ -21,7 +22,7 @@ DragZoomItem {
         Repeater {
             model: main_grid.max_tiles_amount
             delegate: LandTile {
-                tile_id: (index < 84) ? index : -1
+                tile_id: (index == main_grid.start_tile_index) ? 0 : -1
 
                 Text {
                     id: debug_text
