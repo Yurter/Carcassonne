@@ -8,6 +8,8 @@ Item {
         origin.y: pinch_area.m_y2
         xScale: pinch_area.m_zoom2
         yScale: pinch_area.m_zoom2
+        Behavior on xScale { PropertyAnimation { duration: 50 } }
+        Behavior on yScale { PropertyAnimation { duration: 50 } }
     }
 
     property real min_x: 0
@@ -96,14 +98,22 @@ Item {
         }
     }
 
-    onXChanged: {
+    Connections {
+        target: scaler
+        onXScaleChanged: checkXPos()
+        onYScaleChanged: checkYPos()
+    }
+
+    onXChanged: checkXPos()
+    onYChanged: checkYPos()
+
+    function checkXPos() {
         if (pinch_area.local_min_x > pinch_area.local_max_x) { return }
-        console.log("x", x)
         if (x < pinch_area.local_min_x) { x = pinch_area.local_min_x }
         if (x > pinch_area.local_max_x) { x = pinch_area.local_max_x }
     }
 
-    onYChanged: {
+    function checkYPos() {
         if (pinch_area.local_min_y > pinch_area.local_max_y) { return }
         if (y < pinch_area.local_min_y) { y = pinch_area.local_min_y }
         if (y > pinch_area.local_max_y) { y = pinch_area.local_max_y }
