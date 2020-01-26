@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
@@ -18,23 +18,3 @@ int main(int argc, char *argv[])
 
     return app.exec();
 }
-
-/*
-База данных: PostgreSQL
-    учетные записи
-    история игр
-
-Клиент:
-    регистрация
-    вход
-    игра
-    чат\голос
-    поиск игры
-    выход
-
-Сервер:
-    управление учетками
-    проведение игр
-
-
-*/
