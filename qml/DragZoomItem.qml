@@ -10,17 +10,29 @@ Item {
         yScale: pinch_area.m_zoom2
     }
 
+    property real min_x: 0
+    property real min_y: 0
+    property real max_x: 100
+    property real max_y: 100
+
+    property real min_zoom: 0.5
+    property real max_zoom: 2.0
+    property real zoom_step: 0
+
     PinchArea {
         id: pinch_area
         anchors.fill: parent
         property real m_x1: 0
         property real m_y1: 0
-        property real m_y2: 0
         property real m_x2: 0
+        property real m_y2: 0
         property real m_zoom1: 1
         property real m_zoom2: 1
-        property real m_max: 2
-        property real m_min: 0.5
+
+        property real local_min_x: min_x + (root.width  * (1 - scaler.xScale) * (root.width - scaler.origin.x)  / (root.width  + 1))
+        property real local_min_y: min_y + (root.height * (1 - scaler.yScale) * (root.height - scaler.origin.y) / (root.height + 1))
+        property real local_max_x: max_x - (root.width  * (1 - scaler.xScale) * (scaler.origin.x / (root.width  + 1)))
+        property real local_max_y: max_y - (root.height * (1 - scaler.yScale) * (scaler.origin.y / (root.height + 1)))
 
         onPinchStarted: {
             console.log("Pinch Started")
@@ -37,7 +49,7 @@ Item {
             m_zoom1 = scaler.xScale
             var dz = pinch.scale-pinch.previousScale
             var newZoom = m_zoom1+dz
-            if (newZoom <= m_max && newZoom >= m_min) {
+            if (newZoom <= max_zoom && newZoom >= min_zoom) {
                 m_zoom2 = newZoom
             }
         }
@@ -60,21 +72,21 @@ Item {
                 var newZoom
                 if (wheel.angleDelta.y > 0) {
                     newZoom = pinch_area.m_zoom1+0.1
-                    if (newZoom <= pinch_area.m_max) {
+                    if (newZoom <= max_zoom) {
                         pinch_area.m_zoom2 = newZoom
                     } else {
-                        pinch_area.m_zoom2 = pinch_area.m_max
+                        pinch_area.m_zoom2 = max_zoom
                     }
                 } else {
                     newZoom = pinch_area.m_zoom1-0.1
-                    if (newZoom >= pinch_area.m_min) {
+                    if (newZoom >= min_zoom) {
                         pinch_area.m_zoom2 = newZoom
                     } else {
-                        pinch_area.m_zoom2 = pinch_area.m_min
+                        pinch_area.m_zoom2 = min_zoom
                     }
                 }
-                root.x = root.x + (pinch_area.m_x1-pinch_area.m_x2)*(1-pinch_area.m_zoom1)
-                root.y = root.y + (pinch_area.m_y1-pinch_area.m_y2)*(1-pinch_area.m_zoom1)
+                root.x = root.x + (pinch_area.m_x1 - pinch_area.m_x2) * (1 - pinch_area.m_zoom1)
+                root.y = root.y + (pinch_area.m_y1 - pinch_area.m_y2) * (1 - pinch_area.m_zoom1)
             }
 
             MouseArea {
@@ -82,5 +94,18 @@ Item {
                 onClicked: console.log("Click in child")
             }
         }
+    }
+
+    onXChanged: {
+        if (pinch_area.local_min_x > pinch_area.local_max_x) { return }
+        console.log("x", x)
+        if (x < pinch_area.local_min_x) { x = pinch_area.local_min_x }
+        if (x > pinch_area.local_max_x) { x = pinch_area.local_max_x }
+    }
+
+    onYChanged: {
+        if (pinch_area.local_min_y > pinch_area.local_max_y) { return }
+        if (y < pinch_area.local_min_y) { y = pinch_area.local_min_y }
+        if (y > pinch_area.local_max_y) { y = pinch_area.local_max_y }
     }
 }

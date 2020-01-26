@@ -6,6 +6,10 @@ DragZoomItem {
     y: (height - main_window.height) / (-2)
     width: main_grid.width
     height: main_grid.height
+    min_x: main_window.width - main_grid.width
+    min_y: main_window.height - main_grid.height
+    max_x: 0
+    max_y: 0
 
     Grid {
         id: main_grid
