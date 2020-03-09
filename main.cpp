@@ -1,14 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
-enum class TileEdge {
-    City,
-    Road,
-    Field,
-    River,
-    Monastery,
-};
-
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

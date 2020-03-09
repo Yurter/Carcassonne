@@ -63,7 +63,7 @@ Item {
             drag.target: root
             drag.filterChildren: true
             onWheel: {
-                console.log("Wheel Scrolled")
+//                console.log("Wheel Scrolled")
                 pinch_area.m_x1 = scaler.origin.x
                 pinch_area.m_y1 = scaler.origin.y
                 pinch_area.m_zoom1 = scaler.xScale
