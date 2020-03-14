@@ -132,8 +132,12 @@ DragZoomItem {
         }
     }
 
+    function tileAt(index) {
+        return repeater.itemAt(index)
+    }
+
     function getTile(x, y) {
-        return repeater.itemAt(x + (y * main_grid.grid_size))
+        return tileAt(x + (y * main_grid.grid_size))
     }
 
     function getUnusedTileIdx() {
@@ -184,6 +188,7 @@ DragZoomItem {
                     continue
                 }
 
+                let rotation_list = []
                 for (let rot = 0; rot < 4; ++rot) {
                     const match =
                             ((current_tile.tile.edges[(rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
@@ -192,9 +197,16 @@ DragZoomItem {
                         &&  ((current_tile.tile.edges[(rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
 
                     if (match) {
-                        candidates.push(candidate_tile)
-                        break
+                        rotation_list.push(rot)
                     }
+                }
+
+                if (rotation_list.length !== 0) {
+                    const current_tile_index = x + (y * main_grid.grid_size)
+                    candidates.push({
+                        index: current_tile_index
+                        , rot_list: rotation_list
+                    })
                 }
             }
         }
@@ -202,17 +214,26 @@ DragZoomItem {
         return candidates
     }
 
+    function getAvailableRotation(candidates) {
+        let rotations = []
+        for (let i in candidates) {
+            //
+        }
+        return rotations
+    }
+
     function findApproachableTiles() {
         for (let tile_idx = 0
              ; tile_idx < main_grid.max_tiles_amount
              ; ++tile_idx) {
-            const tile = repeater.itemAt(tile_idx)
+            const tile = tileAt(tile_idx)
             tile.setHighlight(false)
         }
 
         const candidates = findCandidateTiles()
         for (let i in candidates) {
-            candidates[i].setHighlight(true)
+            const cand_idx = candidates[i].index
+            tileAt(cand_idx).setHighlight(true)
         }
     }
 }
