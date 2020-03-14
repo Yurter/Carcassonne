@@ -27,7 +27,7 @@ DragZoomItem {
             model: main_grid.max_tiles_amount
             delegate: LandTile {
 //                tile_type_idx: (index == main_grid.start_tile_index) ? 1 : 0
-                tile_type_idx: {
+                tile_type_idx: { // debug
                     if (index == main_grid.start_tile_index) {
                         return 1
                     }
@@ -44,6 +44,55 @@ DragZoomItem {
                         return 5
                     }
                     return 0
+                }
+
+                Text {
+                    text: index
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                }
+                Text {
+                    anchors.top: parent.top
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: edgeToString(parent.edges[0])
+                    font.pixelSize: 12
+                    color: "blue"
+                }
+                Text {
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: edgeToString(parent.edges[1])
+                    font.pixelSize: 12
+                    color: "blue"
+                }
+                Text {
+                    anchors.bottom: parent.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    text: edgeToString(parent.edges[2])
+                    font.pixelSize: 12
+                    color: "blue"
+                }
+                Text {
+                    anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: edgeToString(parent.edges[3])
+                    font.pixelSize: 12
+                    color: "blue"
+                }
+                function edgeToString(value) {
+                    switch (value) {
+                    case 0:
+                        return "None"
+                    case 1:
+                        return "City"
+                    case 2:
+                        return "Road"
+                    case 3:
+                        return "Field"
+                    case 4:
+                        return "River"
+                    }
+                    return "Invalid"
                 }
             }
         }
@@ -96,69 +145,60 @@ DragZoomItem {
 
     function findCandidateTiles() {
         let candidates = []
-        for (var x = 0; x < main_grid.grid_size; ++x) {
-            for (var y = 0; y < main_grid.grid_size; ++y) {
-                const tile = getTile(x,y)
-                if (!tile.isEmpty()) {
+
+        for (let x = 0; x < main_grid.grid_size; ++x) {
+            for (let y = 0; y < main_grid.grid_size; ++y) {
+
+                const candidate_tile = getTile(x,y)
+                if (!candidate_tile.isEmpty()) {
                     continue
                 }
-                const leftNearby    = getTile(x-1,y)
-                const rightNearby   = getTile(x+1,y)
-                const topNearby     = getTile(x,y-1)
-                const downNearby    = getTile(x,y+1)
-                const nearbyEdges = []
 
+                const nearby_tiles = [
+                    getTile(x,y-1)   // top
+                    , getTile(x+1,y) // right
+                    , getTile(x,y+1) // bottom
+                    , getTile(x-1,y) // left
+                ]
 
-                if (topNearby && !topNearby.isEmpty()) {
-                    nearbyEdges.push(topNearby.downEdge)
-                } else {
-                    nearbyEdges.push(LandTile.None)
+                let nearby_edges = []
+
+                for (let i in nearby_tiles) {
+                    if (nearby_tiles[i] && !nearby_tiles[i].isEmpty()) {
+                        // bottom, left, top, right
+                        const idx = (parseInt(i) + 2) % 4
+                        nearby_edges.push(nearby_tiles[i].edges[idx])
+                    } else {
+                        nearby_edges.push(LandTile.None)
+                    }
                 }
 
-                if (rightNearby && !rightNearby.isEmpty()) {
-                    nearbyEdges.push(rightNearby.leftEdge)
-                } else {
-                    nearbyEdges.push(LandTile.None)
-                }
-
-                if (downNearby && !downNearby.isEmpty()) {
-                    nearbyEdges.push(downNearby.topEdge)
-                } else {
-                    nearbyEdges.push(LandTile.None)
-                }
-
-                if (leftNearby && !leftNearby.isEmpty()) {
-                    nearbyEdges.push(leftNearby.rightEdge)
-                } else {
-                    nearbyEdges.push(LandTile.None)
-                }
-
-                let noNearbyTiles = true
-                for (let i in nearbyEdges) {
-                    if (nearbyEdges[i]) {
-                        noNearbyTiles = false
+                let no_nearby_tiles = true
+                for (let j in nearby_edges) {
+                    if (nearby_edges[j]) {
+                        no_nearby_tiles = false
                         break
                     }
                 }
-                if (noNearbyTiles) {
+                if (no_nearby_tiles) {
                     continue
                 }
 
                 for (let rot = 0; rot < 4; ++rot) {
                     const match =
-                            ((current_tile.tile.edges[(rot + 0) % 4] === nearbyEdges[0]) || (nearbyEdges[0] === LandTile.None))
-                        &&  ((current_tile.tile.edges[(rot + 1) % 4] === nearbyEdges[1]) || (nearbyEdges[1] === LandTile.None))
-                        &&  ((current_tile.tile.edges[(rot + 2) % 4] === nearbyEdges[2]) || (nearbyEdges[2] === LandTile.None))
-                        &&  ((current_tile.tile.edges[(rot + 3) % 4] === nearbyEdges[3]) || (nearbyEdges[3] === LandTile.None))
+                            ((current_tile.tile.edges[(rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
+                        &&  ((current_tile.tile.edges[(rot + 1) % 4] === nearby_edges[1]) || (nearby_edges[1] === LandTile.None))
+                        &&  ((current_tile.tile.edges[(rot + 2) % 4] === nearby_edges[2]) || (nearby_edges[2] === LandTile.None))
+                        &&  ((current_tile.tile.edges[(rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
 
                     if (match) {
-                        tile.setHighlight(true)
-                        candidates.push(tile)
+                        candidates.push(candidate_tile)
                         break
                     }
                 }
             }
         }
+
         return candidates
     }
 
@@ -169,12 +209,10 @@ DragZoomItem {
             const tile = repeater.itemAt(tile_idx)
             tile.setHighlight(false)
         }
+
         const candidates = findCandidateTiles()
         for (let i in candidates) {
-            if (candidates[i]) {
-                //
-            }
+            candidates[i].setHighlight(true)
         }
     }
-
 }
