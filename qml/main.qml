@@ -20,4 +20,5 @@ Window {
     CurrentTile {
        id: current_tile
     }
+
 }

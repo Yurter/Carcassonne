@@ -66,30 +66,69 @@ Item {
 //        Monastery
     }
 
-    function isAppropriate(other) {
-        return false
-    }
+    state: "INACTIVE"
+    states: [
+        State {
+            name: "INACTIVE"
+            PropertyChanges {
+                target: highlightRect
+                color: "transparent"
+                opacity: 0.0
+            }
+        }
+        , State {
+            name: "PLACED"
+            PropertyChanges {
+                target: highlightRect
+                color: "transparent"
+                opacity: 0.0
+            }
+        }
+        , State {
+            name: "CANDIDATE"
+            PropertyChanges {
+                target: highlightRect
+                color: "yellow"
+                opacity: 0.5
+            }
+        }
+        , State {
+            name: "GOOD_CANDIDATE"
+            PropertyChanges {
+                target: highlightRect
+                color: "green"
+                opacity: 0.5
+            }
+        }
+        , State {
+            name: "BAD_CANDIDATE"
+            PropertyChanges {
+                target: highlightRect
+                color: "red"
+                opacity: 0.5
+            }
+        }
+    ]
 
     function isEmpty() {
         return tile_type_idx == 0
     }
 
-    function setHighlight(value) {
-        highlightRect.opacity = value ? 0.5 : 0.0
+    function setTile(idx) {
+        tile_type_idx = idx
+        state = "PLACED"
+    }
+
+    function makeCandidate(rot_list) {
+        state = "CANDIDATE"
+        accepted_rotations = rot_list
+        console.log(rot_list)
     }
 
     Image {
         id: tile_texture
         anchors.fill: parent
         source: tile_images[tile_type_idx]
-
-        Rectangle {
-            width: 10
-            height: 10
-            color: "red"
-            x: 10
-            y: 10
-        }
     }
 
     Rectangle {
@@ -98,4 +137,28 @@ Item {
         opacity: 0.0
         color: "yellow"
     }
+
+    HoverHandler {
+        property string prevRootState: root.state
+        onHoveredChanged: {
+            if (root.state == "PLACED"
+                || root.state == "INACTIVE") {
+                return
+            }
+            if (hovered) {
+                prevRootState = root.state
+                const current_tile_rot = 0 // tmp
+                if (accepted_rotations.includes(current_tile_rot)) {
+                    root.state = "GOOD_CANDIDATE"
+                } else {
+                    root.state = "BAD_CANDIDATE"
+                }
+            } else {
+                root.state = prevRootState
+            }
+        }
+    }
+
+    property var accepted_rotations: []
+
 }

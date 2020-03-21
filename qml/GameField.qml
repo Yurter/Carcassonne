@@ -11,41 +11,23 @@ DragZoomItem {
     max_x: 0
     max_y: 0
 
+    readonly property int grid_size:        21
+    readonly property int max_tiles_amount: Math.pow(grid_size, 2)
+    readonly property int start_tile_index: max_tiles_amount / 2
+    readonly property int start_tile_type_index: 1
+
     property var unused_tile_idxs: []
 
     Grid {
         id: main_grid
-        readonly property int grid_size: 21
-        readonly property int max_tiles_amount: Math.pow(grid_size, 2)
-        readonly property int start_tile_index: max_tiles_amount / 2
         columns: Math.sqrt(max_tiles_amount)
         rows: columns
         transform: Scale { id: main_grid_scale }
 
         Repeater {
             id: repeater
-            model: main_grid.max_tiles_amount
+            model: max_tiles_amount
             delegate: LandTile {
-//                tile_type_idx: (index == main_grid.start_tile_index) ? 1 : 0
-                tile_type_idx: { // debug
-                    if (index == main_grid.start_tile_index) {
-                        return 1
-                    }
-                    if (index == (main_grid.start_tile_index-1)) {
-                        return 6
-                    }
-                    if (index == (main_grid.start_tile_index-main_grid.grid_size)) {
-                        return 5
-                    }
-                    if (index == (main_grid.start_tile_index-main_grid.grid_size*2)) {
-                        return 5
-                    }
-                    if (index == (main_grid.start_tile_index-main_grid.grid_size*2-1)) {
-                        return 5
-                    }
-                    return 0
-                }
-
                 Text {
                     text: index
                     anchors.centerIn: parent
@@ -99,7 +81,13 @@ DragZoomItem {
     }
 
     Component.onCompleted: {
+        initStartTile()
         initUnusedTiles()
+        nextStep()
+    }
+
+    function initStartTile() {
+        tileAt(start_tile_index).setTile(start_tile_type_index)
     }
 
     function initUnusedTiles() {
@@ -125,11 +113,9 @@ DragZoomItem {
         console.log("Number of created tiles:", unused_tile_idxs.length)
     }
 
-    Connections {
-        target: current_tile
-        onTapped: {
-            current_tile.tile.edges = getNotUsedTile()
-        }
+    function nextStep() {
+        updateCurrentTile()
+        highlightCandidates()
     }
 
     function tileAt(index) {
@@ -137,7 +123,11 @@ DragZoomItem {
     }
 
     function getTile(x, y) {
-        return tileAt(x + (y * main_grid.grid_size))
+        return tileAt(x + (y * grid_size))
+    }
+
+    function updateCurrentTile() {
+        current_tile.tile.tile_type_idx = game_field.getUnusedTileIdx()
     }
 
     function getUnusedTileIdx() {
@@ -147,11 +137,21 @@ DragZoomItem {
         return unused_idx
     }
 
+    function highlightCandidates() {
+        const candidates = findCandidateTiles()
+        console.log(candidates.length)
+        for (let i in candidates) {
+            const cand_idx = candidates[i].index
+            const rot_list = candidates[i].rot_list
+            tileAt(cand_idx).makeCandidate(rot_list)
+        }
+    }
+
     function findCandidateTiles() {
         let candidates = []
 
-        for (let x = 0; x < main_grid.grid_size; ++x) {
-            for (let y = 0; y < main_grid.grid_size; ++y) {
+        for (let x = 0; x < grid_size; ++x) {
+            for (let y = 0; y < grid_size; ++y) {
 
                 const candidate_tile = getTile(x,y)
                 if (!candidate_tile.isEmpty()) {
@@ -202,7 +202,7 @@ DragZoomItem {
                 }
 
                 if (rotation_list.length !== 0) {
-                    const current_tile_index = x + (y * main_grid.grid_size)
+                    const current_tile_index = x + (y * grid_size)
                     candidates.push({
                         index: current_tile_index
                         , rot_list: rotation_list
@@ -214,26 +214,4 @@ DragZoomItem {
         return candidates
     }
 
-    function getAvailableRotation(candidates) {
-        let rotations = []
-        for (let i in candidates) {
-            //
-        }
-        return rotations
-    }
-
-    function findApproachableTiles() {
-        for (let tile_idx = 0
-             ; tile_idx < main_grid.max_tiles_amount
-             ; ++tile_idx) {
-            const tile = tileAt(tile_idx)
-            tile.setHighlight(false)
-        }
-
-        const candidates = findCandidateTiles()
-        for (let i in candidates) {
-            const cand_idx = candidates[i].index
-            tileAt(cand_idx).setHighlight(true)
-        }
-    }
 }

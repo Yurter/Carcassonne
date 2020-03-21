@@ -68,8 +68,10 @@ Item {
                 pinch_area.m_y1 = scaler.origin.y
                 pinch_area.m_zoom1 = scaler.xScale
 
-                pinch_area.m_x2 = mouseX
-                pinch_area.m_y2 = mouseY
+//                pinch_area.m_x2 = mouseX
+//                pinch_area.m_y2 = mouseY
+                pinch_area.m_x2 = wheel.x
+                pinch_area.m_y2 = wheel.y
 
                 var newZoom
                 if (wheel.angleDelta.y > 0) {
