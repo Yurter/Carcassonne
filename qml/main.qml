@@ -11,14 +11,14 @@ Window {
 
     property alias main_window:     root
     property alias game_field:      game_field
-    property alias current_tile:    current_tile
+    property alias current_tile:    current_tile_holder.tile
 
     GameField {
         id: game_field
     }
 
     CurrentTile {
-       id: current_tile
+       id: current_tile_holder
     }
 
 }

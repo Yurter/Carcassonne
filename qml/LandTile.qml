@@ -1,14 +1,12 @@
-import QtQuick 2.13
+import QtQuick 2.14
 
 Item {
     id: root
     width: 100
     height: 100
 
-//    rotation: 90 // TODO bug: dysplay image on field's tile
-
-    property int tile_type_idx: 0
-    property var edges: tile_types[tile_type_idx]
+    property int type_idx: 0
+    property var edges: tile_types[type_idx]
 
     property int topEdge:   edges[0]
     property int rightEdge: edges[1]
@@ -77,14 +75,6 @@ Item {
             }
         }
         , State {
-            name: "PLACED"
-            PropertyChanges {
-                target: highlightRect
-                color: "transparent"
-                opacity: 0.0
-            }
-        }
-        , State {
             name: "CANDIDATE"
             PropertyChanges {
                 target: highlightRect
@@ -111,54 +101,187 @@ Item {
     ]
 
     function isEmpty() {
-        return tile_type_idx == 0
+        return type_idx == 0
     }
 
     function setTile(idx) {
-        tile_type_idx = idx
-        state = "PLACED"
+        type_idx = idx
+        hover_handler.disable()
+        shiftEdges((rotation / 90) % 360)
+        state = "INACTIVE"
+    }
+
+    function reset() {
+        state = "INACTIVE"
     }
 
     function makeCandidate(rot_list) {
         state = "CANDIDATE"
         accepted_rotations = rot_list
-        console.log(rot_list)
+    }
+
+    function shiftEdges(step) {
+        console.log()
+        console.log("=================================")
+        console.log("step:", step)
+        console.log("before:", edges)
+        const buf = edges.slice()
+        edges[(/*4 - */step + 0) % 4] = buf[0]
+        edges[(/*4 - */step + 1) % 4] = buf[1]
+        edges[(/*4 - */step + 2) % 4] = buf[2]
+        edges[(/*4 - */step + 3) % 4] = buf[3]
+//        switch (step) {
+//        case 0: break
+//        case 1: edges = [ edges[1], edges[2], edges[3], edges[0] ]; break
+//        case 2: edges = [ edges[2], edges[3], edges[0], edges[1] ]; break
+//        case 3: edges = [ edges[3], edges[0], edges[1], edges[2] ]; break
+//        }
+
+//        const buf = edges.slice()
+//        for (let i = buf.length; i < 0; --i) {
+//            edges[i] = buf[(i - step) % buf.length]
+//        }
+//        for (let i = 0; i < buf.length; ++i) {
+//            edges[i] = buf[(i + step) % buf.length]
+//        }
+        console.log("after:", edges)
     }
 
     Image {
         id: tile_texture
         anchors.fill: parent
-        source: tile_images[tile_type_idx]
+        source: tile_images[type_idx]
     }
 
     Rectangle {
         id: highlightRect
         anchors.fill: parent
-        opacity: 0.0
-        color: "yellow"
     }
 
     HoverHandler {
-        property string prevRootState: root.state
+        id: hover_handler
+        enabled: root.state != "INACTIVE"
+        property string prev_root_state: root.state
+        property int prev_root_type_idx: root.type_idx
         onHoveredChanged: {
-            if (root.state == "PLACED"
-                || root.state == "INACTIVE") {
-                return
-            }
             if (hovered) {
-                prevRootState = root.state
-                const current_tile_rot = 0 // tmp
-                if (accepted_rotations.includes(current_tile_rot)) {
-                    root.state = "GOOD_CANDIDATE"
-                } else {
-                    root.state = "BAD_CANDIDATE"
-                }
+                prev_root_state = root.state
+                prev_root_type_idx = root.type_idx
+                updateState()
             } else {
-                root.state = prevRootState
+                root.state = prev_root_state
+                root.type_idx = prev_root_type_idx
+            }
+        }
+        function disable() {
+            prev_root_state = "INACTIVE"
+            prev_root_type_idx = root.type_idx
+        }
+    }
+
+    TapHandler {
+        enabled: root.state != "INACTIVE"
+        onTapped: {
+            if (root.state == "GOOD_CANDIDATE") {
+                game_field.acceptCurrentTile(root)
+            }
+            else if (root.state == "BAD_CANDIDATE") {
+                //
             }
         }
     }
 
+    WheelHandler {
+        enabled: root.state != "INACTIVE"
+        onWheel: {
+            const rot_delta = event.angleDelta.y > 0 ? 90 : -90
+            let new_rot_value = (current_tile.rotation + rot_delta) % 360
+            if (new_rot_value < 0) {
+                new_rot_value = 360 + new_rot_value
+            }
+            current_tile.rotation = new_rot_value
+            updateState()
+        }
+    }
+
+    function updateState() {
+        const current_tile_rot = current_tile.rotation
+        if (accepted_rotations.includes(current_tile_rot)) {
+            root.state = "GOOD_CANDIDATE"
+        } else {
+            root.state = "BAD_CANDIDATE"
+        }
+        rotation = current_tile.rotation
+        type_idx = current_tile.type_idx
+    }
+
     property var accepted_rotations: []
+    onAccepted_rotationsChanged: {
+        console.log("accepted_rotations:", accepted_rotations)
+    }
+
+    Text {
+        text: root.rotation
+        color: "red"
+        font {
+            pixelSize: 16
+            bold: true
+        }
+    }
+
+    Text {
+        text: type_idx
+        color: "red"
+        anchors.right: parent.right
+        font {
+            pixelSize: 16
+            bold: true
+        }
+    }
+
+    Text {
+        anchors.top: parent.top
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: edgeToString(parent.edges[0])
+        font.pixelSize: 12
+        color: "blue"
+    }
+    Text {
+        anchors.right: parent.right
+        anchors.verticalCenter: parent.verticalCenter
+        text: edgeToString(parent.edges[1])
+        font.pixelSize: 12
+        color: "blue"
+    }
+    Text {
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: edgeToString(parent.edges[2])
+        font.pixelSize: 12
+        color: "blue"
+    }
+    Text {
+        anchors.left: parent.left
+        anchors.verticalCenter: parent.verticalCenter
+        text: edgeToString(parent.edges[3])
+        font.pixelSize: 12
+        color: "blue"
+    }
+
+    function edgeToString(value) {
+        switch (value) {
+        case 0:
+            return "None"
+        case 1:
+            return "City"
+        case 2:
+            return "Road"
+        case 3:
+            return "Field"
+        case 4:
+            return "River"
+        }
+        return "Invalid"
+    }
 
 }
