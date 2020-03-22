@@ -25,5 +25,6 @@
         <file>img/tiles/16.jpg</file>
         <file>img/tiles/17.jpg</file>
         <file>img/tiles/06.jpg</file>
+        <file>js/Utils.js</file>
     </qresource>
 </RCC>

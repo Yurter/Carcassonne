@@ -1,5 +1,6 @@
-import QtQuick 2.13
-import QtQuick.Window 2.13
+import QtQuick 2.14
+import QtQuick.Window 2.14
+import "../js/Utils.js" as Utils
 
 Window {
     id: root

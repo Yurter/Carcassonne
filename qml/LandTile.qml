@@ -1,4 +1,5 @@
 import QtQuick 2.14
+import "../js/Utils.js" as Utils
 
 Item {
     id: root
@@ -107,8 +108,9 @@ Item {
     function setTile(idx) {
         type_idx = idx
         hover_handler.disable()
-        shiftEdges((rotation / 90) % 360)
-        state = "INACTIVE"
+        const move_distance = (rotation / 90) % 360
+        Utils.moveArrayElementsForward(edges, move_distance)
+        reset()
     }
 
     function reset() {
@@ -118,14 +120,6 @@ Item {
     function makeCandidate(rot_list) {
         state = "CANDIDATE"
         accepted_rotations = rot_list
-    }
-
-    function shiftEdges(step) {
-        const buf = edges.slice()
-        edges[(step + 0) % 4] = buf[0]
-        edges[(step + 1) % 4] = buf[1]
-        edges[(step + 2) % 4] = buf[2]
-        edges[(step + 3) % 4] = buf[3]
     }
 
     Image {
