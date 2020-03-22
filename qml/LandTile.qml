@@ -121,30 +121,11 @@ Item {
     }
 
     function shiftEdges(step) {
-        console.log()
-        console.log("=================================")
-        console.log("step:", step)
-        console.log("before:", edges)
         const buf = edges.slice()
-        edges[(/*4 - */step + 0) % 4] = buf[0]
-        edges[(/*4 - */step + 1) % 4] = buf[1]
-        edges[(/*4 - */step + 2) % 4] = buf[2]
-        edges[(/*4 - */step + 3) % 4] = buf[3]
-//        switch (step) {
-//        case 0: break
-//        case 1: edges = [ edges[1], edges[2], edges[3], edges[0] ]; break
-//        case 2: edges = [ edges[2], edges[3], edges[0], edges[1] ]; break
-//        case 3: edges = [ edges[3], edges[0], edges[1], edges[2] ]; break
-//        }
-
-//        const buf = edges.slice()
-//        for (let i = buf.length; i < 0; --i) {
-//            edges[i] = buf[(i - step) % buf.length]
-//        }
-//        for (let i = 0; i < buf.length; ++i) {
-//            edges[i] = buf[(i + step) % buf.length]
-//        }
-        console.log("after:", edges)
+        edges[(step + 0) % 4] = buf[0]
+        edges[(step + 1) % 4] = buf[1]
+        edges[(step + 2) % 4] = buf[2]
+        edges[(step + 3) % 4] = buf[3]
     }
 
     Image {
@@ -216,9 +197,6 @@ Item {
     }
 
     property var accepted_rotations: []
-    onAccepted_rotationsChanged: {
-        console.log("accepted_rotations:", accepted_rotations)
-    }
 
     Text {
         text: root.rotation

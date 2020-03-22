@@ -109,7 +109,6 @@ DragZoomItem {
 
     function highlightCandidates() {
         const candidates = findCandidateTiles()
-        console.log(candidates.length)
         for (let i in candidates) {
             const cand_idx = candidates[i].index
             const rot_list = candidates[i].rot_list
@@ -159,25 +158,7 @@ DragZoomItem {
                 }
 
                 let rotation_list = []
-                let rotation_list_debug = []
-                let deb0 = 0
-                let deb1 = 0
-                let deb2 = 0
-                let deb3 = 0
                 for (let rot = 0; rot < 4; ++rot) {
-//                    deb0 = ((current_tile.edges[(rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
-//                    deb1 = ((current_tile.edges[(rot + 1) % 4] === nearby_edges[1]) || (nearby_edges[1] === LandTile.None))
-//                    deb2 = ((current_tile.edges[(rot + 2) % 4] === nearby_edges[2]) || (nearby_edges[2] === LandTile.None))
-//                    deb3 = ((current_tile.edges[(rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
-//                    const match =
-//                                ((current_tile.edges[(rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
-//                                &&  ((current_tile.edges[(rot + 1) % 4] === nearby_edges[1]) || (nearby_edges[1] === LandTile.None))
-//                                &&  ((current_tile.edges[(rot + 2) % 4] === nearby_edges[2]) || (nearby_edges[2] === LandTile.None))
-//                                &&  ((current_tile.edges[(rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
-                    deb0 = ((current_tile.edges[(4 - rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
-                    deb1 = ((current_tile.edges[(4 - rot + 1) % 4] === nearby_edges[1]) || (nearby_edges[1] === LandTile.None))
-                    deb2 = ((current_tile.edges[(4 - rot + 2) % 4] === nearby_edges[2]) || (nearby_edges[2] === LandTile.None))
-                    deb3 = ((current_tile.edges[(4 - rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
                     const match =
                             ((current_tile.edges[(4 - rot + 0) % 4] === nearby_edges[0]) || (nearby_edges[0] === LandTile.None))
                         &&  ((current_tile.edges[(4 - rot + 1) % 4] === nearby_edges[1]) || (nearby_edges[1] === LandTile.None))
@@ -185,35 +166,11 @@ DragZoomItem {
                         &&  ((current_tile.edges[(4 - rot + 3) % 4] === nearby_edges[3]) || (nearby_edges[3] === LandTile.None))
 
                     if (match) {
-                        console.log()
-                        console.log(rot)
-//                        console.log("-->"
-//                            , (current_tile.edges[(rot + 3 + 0) % 4])
-//                            , (current_tile.edges[(rot + 3 + 1) % 4])
-//                            , (current_tile.edges[(rot + 3 + 2) % 4])
-//                            , (current_tile.edges[(rot + 3 + 3) % 4])
-//                        )
-//                        console.log("-->"
-//                            , (rot + 3 + 0) % 4
-//                            , (rot + 3 + 1) % 4
-//                            , (rot + 3 + 2) % 4
-//                            , (rot + 3 + 3) % 4
-//                        )
-                        console.log("deb0:", deb0)
-                        console.log("deb1:", deb1)
-                        console.log("deb2:", deb2)
-                        console.log("deb3:", deb3)
                         rotation_list.push((rot * 90) % 360)
-                        rotation_list_debug.push(rot)
                     }
                 }
 
                 if (rotation_list.length !== 0) {
-                    console.log("rotation_list_debug:", rotation_list_debug)
-                    console.log("current_tile.edges:", current_tile.edges)
-                    console.log("nearby_edges:", nearby_edges)
-                    console.log()
-
                     const current_tile_index = x + (y * grid_size)
                     candidates.push({
                         index: current_tile_index
