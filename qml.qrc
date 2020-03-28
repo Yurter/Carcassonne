@@ -1,12 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/main.qml</file>
-        <file>qml/GameField.qml</file>
-        <file>qml/LandTile.qml</file>
+        <file>qml/main/main.qml</file>
+        <file>qml/gameplay/GameField.qml</file>
+        <file>qml/gameplay/LandTile.qml</file>
         <file>qml/Scoreboard.qml</file>
-        <file>qml/DragZoomItem.qml</file>
+        <file>qml/components/DragZoomItem.qml</file>
         <file>qml/PlayerPanel.qml</file>
-        <file>qml/CurrentTile.qml</file>
+        <file>qml/gameplay/CurrentTile.qml</file>
         <file>img/tiles/00.jpg</file>
         <file>img/tiles/01.jpg</file>
         <file>img/tiles/02.jpg</file>

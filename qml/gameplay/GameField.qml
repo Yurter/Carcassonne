@@ -1,4 +1,5 @@
 import QtQuick 2.13
+import "../components"
 
 DragZoomItem {
     id: root
@@ -65,7 +66,7 @@ DragZoomItem {
         for (i = 0; i < 3; ++i) unused_tile_idxs.push(15)
         for (i = 0; i < 2; ++i) unused_tile_idxs.push(16)
         for (i = 0; i < 3; ++i) unused_tile_idxs.push(17)
-        for (i = 0; i < 2; ++i) unused_tile_idxs.push(18)
+//        for (i = 0; i < 2; ++i) unused_tile_idxs.push(18)
 
         console.log("Number of created tiles:", unused_tile_idxs.length)
     }

@@ -1,5 +1,5 @@
 import QtQuick 2.14
-import "../js/Utils.js" as Utils
+import "../../js/Utils.js" as Utils
 
 Item {
     id: root
