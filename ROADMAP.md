@@ -11,7 +11,6 @@
     - [ ] Scoring a road
     - [ ] Scoring a city
     - [ ] Scoring a monastery
-    - [ ] Many meeples in the same feature
 ### 2. Local
 ### 3. Online
 ### 4. UI
