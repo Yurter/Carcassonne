@@ -35,6 +35,40 @@ Item {
         , [ LandTile.Field, LandTile.Field, LandTile.Road,  LandTile.Field ] // 17
     ]
 
+    function makeHighwaymanZone(pos_idx) {
+        return { pos: pos_idx, type: LandTile.Road }
+    }
+
+    function makeKnightZone(pos_idx) {
+        return { pos: pos_idx, type: LandTile.City }
+    }
+
+    function makeMonkZone(pos_idx) {
+        return { pos: pos_idx, type: LandTile.Monastery }
+    }
+
+
+    readonly property var tile_zones_type: [
+          [ ]
+        , [ makeKnightZone(1), makeHighwaymanZone(4) ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+        , [ ]
+    ]
+
     readonly property var tile_images: [
           "qrc:/img/tiles/00.jpg"
         , "qrc:/img/tiles/01.jpg"
@@ -56,13 +90,13 @@ Item {
         , "qrc:/img/tiles/17.jpg"
     ]
 
-    enum TileEdge { //usage ex.: LandTile.Road
-        None,
-        City,
-        Road,
-        Field,
-        River
-//        Monastery
+    enum TileSegment { // usage ex.: LandTile.Road
+          None
+        , City
+        , Road
+        , Field
+        , River
+        , Monastery
     }
 
     state: "INACTIVE"
@@ -126,6 +160,29 @@ Item {
         id: tile_texture
         anchors.fill: parent
         source: tile_images[type_idx]
+    }
+
+    Flow {
+        id: tile_zones
+        anchors.fill: parent
+
+        readonly property real zone_size: root.width / 3
+
+        Repeater {
+            model: 9
+            delegate: Item {
+                width: tile_zones.zone_size
+                height: tile_zones.zone_size
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.8
+                    height: parent.height * 0.8
+                    radius: width / 2
+                    color: '#90FFFFFF'
+                }
+            }
+        }
     }
 
     Rectangle {
@@ -255,5 +312,4 @@ Item {
         }
         return "Invalid"
     }
-
 }
