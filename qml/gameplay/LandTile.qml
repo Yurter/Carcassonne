@@ -3,102 +3,33 @@ import "../../js/Utils.js" as Utils
 
 Item {
     id: root
-    width: 100
-    height: 100
 
     property int type_idx: 0
-    property var edges: tile_types[type_idx]
+    readonly property var edges: tile_prototypes[type_idx].edges
 
-    property int topEdge:   edges[0]
-    property int rightEdge: edges[1]
-    property int downEdge:  edges[2]
-    property int leftEdge:  edges[3]
-
-    readonly property var tile_types: [
-          [ LandTile.None,  LandTile.None,  LandTile.None,  LandTile.None  ] // 00 - empty tile
-        , [ LandTile.City,  LandTile.Road,  LandTile.Field, LandTile.Road  ] // 01 - start tile
-        , [ LandTile.City,  LandTile.Field, LandTile.Field, LandTile.Field ] // 02
-        , [ LandTile.City,  LandTile.City,  LandTile.Field, LandTile.Field ] // 03
-        , [ LandTile.Field, LandTile.City,  LandTile.City,  LandTile.City  ] // 04
-        , [ LandTile.City,  LandTile.Field, LandTile.City,  LandTile.Field ] // 05
-        , [ LandTile.Field, LandTile.Road,  LandTile.Road,  LandTile.Road  ] // 06
-        , [ LandTile.City,  LandTile.City,  LandTile.Road,  LandTile.Road  ] // 07
-        , [ LandTile.City,  LandTile.City,  LandTile.Field, LandTile.Field ] // 08
-        , [ LandTile.Road,  LandTile.Road,  LandTile.Field, LandTile.City  ] // 09
-        , [ LandTile.City,  LandTile.City,  LandTile.Road,  LandTile.City  ] // 10
-        , [ LandTile.Road,  LandTile.Road,  LandTile.City,  LandTile.Field ] // 11
-        , [ LandTile.Road,  LandTile.Road,  LandTile.Field, LandTile.Field ] // 12
-        , [ LandTile.City,  LandTile.Road,  LandTile.Road,  LandTile.Road  ] // 13
-        , [ LandTile.Field, LandTile.Road,  LandTile.Field, LandTile.Road  ] // 14
-        , [ LandTile.Field, LandTile.City,  LandTile.Field, LandTile.City  ] // 15
-        , [ LandTile.Field, LandTile.Field, LandTile.Field, LandTile.Field ] // 16
-        , [ LandTile.Field, LandTile.Field, LandTile.Road,  LandTile.Field ] // 17
-    ]
-
-    function makeHighwaymanZone(pos_idx) {
-        return { pos: pos_idx, type: LandTile.Road }
+    function isEmpty() {
+        return type_idx == 0
     }
 
-    function makeKnightZone(pos_idx) {
-        return { pos: pos_idx, type: LandTile.City }
+    function setTile(idx) {
+        type_idx = idx
+        hover_handler.disable()
+        const move_distance = (rotation / 90) % 360
+        Utils.moveArrayElementsForward(edges, move_distance)
+        reset()
     }
 
-    function makeMonkZone(pos_idx) {
-        return { pos: pos_idx, type: LandTile.Monastery }
+    function reset() {
+        state = "INACTIVE"
     }
 
-
-    readonly property var tile_zones_type: [
-          [ ]
-        , [ makeKnightZone(1), makeHighwaymanZone(4) ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-        , [ ]
-    ]
-
-    readonly property var tile_images: [
-          "qrc:/img/tiles/00.jpg"
-        , "qrc:/img/tiles/01.jpg"
-        , "qrc:/img/tiles/02.jpg"
-        , "qrc:/img/tiles/03.jpg"
-        , "qrc:/img/tiles/04.jpg"
-        , "qrc:/img/tiles/05.jpg"
-        , "qrc:/img/tiles/06.jpg"
-        , "qrc:/img/tiles/07.jpg"
-        , "qrc:/img/tiles/08.jpg"
-        , "qrc:/img/tiles/09.jpg"
-        , "qrc:/img/tiles/10.jpg"
-        , "qrc:/img/tiles/11.jpg"
-        , "qrc:/img/tiles/12.jpg"
-        , "qrc:/img/tiles/13.jpg"
-        , "qrc:/img/tiles/14.jpg"
-        , "qrc:/img/tiles/15.jpg"
-        , "qrc:/img/tiles/16.jpg"
-        , "qrc:/img/tiles/17.jpg"
-    ]
-
-    enum TileSegment { // usage ex.: LandTile.Road
-          None
-        , City
-        , Road
-        , Field
-        , River
-        , Monastery
+    function makeCandidate(rot_list) {
+        state = "CANDIDATE"
+        accepted_rotations = rot_list
     }
 
+    width:  100
+    height: 100
     state: "INACTIVE"
     states: [
         State {
@@ -135,31 +66,10 @@ Item {
         }
     ]
 
-    function isEmpty() {
-        return type_idx == 0
-    }
-
-    function setTile(idx) {
-        type_idx = idx
-        hover_handler.disable()
-        const move_distance = (rotation / 90) % 360
-        Utils.moveArrayElementsForward(edges, move_distance)
-        reset()
-    }
-
-    function reset() {
-        state = "INACTIVE"
-    }
-
-    function makeCandidate(rot_list) {
-        state = "CANDIDATE"
-        accepted_rotations = rot_list
-    }
-
     Image {
         id: tile_texture
         anchors.fill: parent
-        source: tile_images[type_idx]
+        source: tile_prototypes[type_idx].image
     }
 
     Flow {
@@ -249,7 +159,7 @@ Item {
 
     property var accepted_rotations: []
 
-    Text {
+    Text { // debug item
         text: root.rotation
         color: "red"
         font {
@@ -257,8 +167,7 @@ Item {
             bold: true
         }
     }
-
-    Text {
+    Text { // debug item
         text: type_idx
         color: "red"
         anchors.right: parent.right
@@ -267,29 +176,28 @@ Item {
             bold: true
         }
     }
-
-    Text {
+    Text { // debug item
         anchors.top: parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         text: edgeToString(parent.edges[0])
         font.pixelSize: 12
         color: "blue"
     }
-    Text {
+    Text { // debug item
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         text: edgeToString(parent.edges[1])
         font.pixelSize: 12
         color: "blue"
     }
-    Text {
+    Text { // debug item
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         text: edgeToString(parent.edges[2])
         font.pixelSize: 12
         color: "blue"
     }
-    Text {
+    Text { // debug item
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         text: edgeToString(parent.edges[3])
@@ -311,5 +219,119 @@ Item {
             return "River"
         }
         return "Invalid"
+    }
+
+    enum TileZone { // usage ex.: LandTile.Road
+          None
+        , City
+        , Road
+        , Field
+        , River
+        , Monastery
+    }
+
+    readonly property var tile_prototypes: [
+        {
+              edges: [ LandTile.None, LandTile.None, LandTile.None, LandTile.None ]
+            , image: 'qrc:/img/tiles/00.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.Road, LandTile.Field, LandTile.Road ]
+            , image: 'qrc:/img/tiles/01.jpg'
+            , zones: [ makeKnightZoneAt(1), makeHighwaymanZoneAt(4) ]
+        }
+        , {
+              edges: [ LandTile.City, LandTile.Field, LandTile.Field, LandTile.Field ]
+            , image: 'qrc:/img/tiles/02.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.City,  LandTile.Field, LandTile.Field ]
+            , image: 'qrc:/img/tiles/03.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.City, LandTile.City, LandTile.City ]
+            , image: 'qrc:/img/tiles/04.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.Field, LandTile.City, LandTile.Field ]
+            , image: 'qrc:/img/tiles/05.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.Road, LandTile.Road, LandTile.Road ]
+            , image: 'qrc:/img/tiles/06.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.City, LandTile.Road, LandTile.Road ]
+            , image: 'qrc:/img/tiles/07.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.City, LandTile.Field, LandTile.Field ]
+            , image: 'qrc:/img/tiles/08.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Road, LandTile.Road, LandTile.Field, LandTile.City ]
+            , image: 'qrc:/img/tiles/09.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.City, LandTile.Road, LandTile.City  ]
+            , image: 'qrc:/img/tiles/10.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Road, LandTile.Road, LandTile.City, LandTile.Field ]
+            , image: 'qrc:/img/tiles/11.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Road, LandTile.Road, LandTile.Field, LandTile.Field ]
+            , image: 'qrc:/img/tiles/12.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.City, LandTile.Road, LandTile.Road,  LandTile.Road ]
+            , image: 'qrc:/img/tiles/13.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.Road, LandTile.Field, LandTile.Road ]
+            , image: 'qrc:/img/tiles/14.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.City, LandTile.Field, LandTile.City ]
+            , image: 'qrc:/img/tiles/15.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.Field, LandTile.Field, LandTile.Field ]
+            , image: 'qrc:/img/tiles/16.jpg'
+            , zones: []
+        }
+        , {
+              edges: [ LandTile.Field, LandTile.Field, LandTile.Road, LandTile.Field ]
+            , image: 'qrc:/img/tiles/17.jpg'
+            , zones: []
+        }
+    ]
+
+    function makeHighwaymanZoneAt(pos_idx) {
+        return { pos: pos_idx, type: LandTile.Road }
+    }
+
+    function makeKnightZoneAt(pos_idx) {
+        return { pos: pos_idx, type: LandTile.City }
+    }
+
+    function makeMonkZoneAt(pos_idx) {
+        return { pos: pos_idx, type: LandTile.Monastery }
     }
 }
