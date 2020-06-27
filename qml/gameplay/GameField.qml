@@ -128,11 +128,16 @@ DragZoomItem {
                     continue
                 }
 
+                const topTile    = getTile(x,y-1)
+                const rightTile  = getTile(x+1,y)
+                const bottomTile = getTile(x,y+1)
+                const leftTile   = getTile(x-1,y)
+
                 const nearby_tiles = [
-                    getTile(x,y-1)   // top
-                    , getTile(x+1,y) // right
-                    , getTile(x,y+1) // bottom
-                    , getTile(x-1,y) // left
+                      topTile
+                    , rightTile
+                    , bottomTile
+                    , leftTile
                 ]
 
                 let nearby_edges = []
@@ -183,5 +188,4 @@ DragZoomItem {
 
         return candidates
     }
-
 }
