@@ -26,5 +26,14 @@
         <file>img/tiles/17.jpg</file>
         <file>img/tiles/06.jpg</file>
         <file>js/Utils.js</file>
+        <file>qml/menu/StartWindow.qml</file>
+        <file>qml/menu/GameCreator.qml</file>
+        <file>qml/menu/GameSetup/Players.qml</file>
+        <file>qml/menu/GameSetup/Expansions.qml</file>
+        <file>qml/menu/GameSetup/Options.qml</file>
+        <file>qml/menu/GameSetup/CheckScreen.qml</file>
+        <file>qml/components/Avatar.qml</file>
+        <file>img/default_avatar.png</file>
+        <file>qml/components/ButtonUser.qml</file>
     </qresource>
 </RCC>
