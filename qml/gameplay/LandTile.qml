@@ -103,7 +103,15 @@ Item {
                     width: parent.width * 0.8
                     height: parent.height * 0.8
                     radius: width / 2
-                    color: '#90FFFFFF'
+                    color: {
+                        switch (modelData.type) {
+                            case LandTile.City:      return '#9000FFFF'
+                            case LandTile.Road:      return '#90FF0000'
+                            case LandTile.Field:     return '#9000FF00'
+                            case LandTile.Monastery: return '#90FFFFFF'
+                            default: return '#000000'
+                        }
+                    }
 
                     Text { // debug item
                         text: modelData.type
