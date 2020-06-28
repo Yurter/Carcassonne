@@ -266,17 +266,17 @@ Item {
         , {
               edges: [ LandTile.City, LandTile.Road, LandTile.Field, LandTile.Road ]
             , image: 'qrc:/img/tiles/01.jpg'
-            , zones: [ makeKnightZoneAt(1), makeHighwaymanZoneAt(4) ]
+            , zones: [ makeKnightZoneAt(1), makeHighwaymanZoneAt(4), makeFarmerZoneAt(7) ]
         }
         , {
               edges: [ LandTile.City, LandTile.Field, LandTile.Field, LandTile.Field ]
             , image: 'qrc:/img/tiles/02.jpg'
-            , zones: [ makeKnightZoneAt(1), makeFarmerZoneAt(4) ]
+            , zones: [ makeKnightZoneAt(1), makeFarmerZoneAt(7) ]
         }
         , {
               edges: [ LandTile.City, LandTile.City,  LandTile.Field, LandTile.Field ]
             , image: 'qrc:/img/tiles/03.jpg'
-            , zones: [ makeKnightZoneAt(1), makeFarmerZoneAt(4), makeKnightZoneAt(5) ]
+            , zones: [ makeKnightZoneAt(1), makeKnightZoneAt(5), makeFarmerZoneAt(6) ]
         }
         , {
               edges: [ LandTile.Field, LandTile.City, LandTile.City, LandTile.City ]
@@ -301,7 +301,7 @@ Item {
         , {
               edges: [ LandTile.City, LandTile.City, LandTile.Field, LandTile.Field ]
             , image: 'qrc:/img/tiles/08.jpg'
-            , zones: [ makeKnightZoneAt(2), makeFarmerZoneAt(4) ]
+            , zones: [ makeKnightZoneAt(2), makeFarmerZoneAt(6) ]
         }
         , {
               edges: [ LandTile.Road, LandTile.Road, LandTile.Field, LandTile.City ]
@@ -311,17 +311,17 @@ Item {
         , {
               edges: [ LandTile.City, LandTile.City, LandTile.Road, LandTile.City  ]
             , image: 'qrc:/img/tiles/10.jpg'
-            , zones: [ makeKnightZoneAt(4), makeFarmerZoneAt(6), makeHighwaymanZoneAt(7), makeFarmerZoneAt(8) ]
+            , zones: [ makeKnightZoneAt(1), makeFarmerZoneAt(6), makeHighwaymanZoneAt(7), makeFarmerZoneAt(8) ]
         }
         , {
               edges: [ LandTile.Road, LandTile.Road, LandTile.City, LandTile.Field ]
             , image: 'qrc:/img/tiles/11.jpg'
-            , zones: [ makeHighwaymanZoneAt(1), makeFarmerZoneAt(2), makeFarmerZoneAt(3), makeHighwaymanZoneAt(5), makeKnightZoneAt(7) ]
+            , zones: [ makeHighwaymanZoneAt(1), makeFarmerZoneAt(2), makeFarmerZoneAt(3), makeKnightZoneAt(7) ]
         }
         , {
               edges: [ LandTile.Road, LandTile.Road, LandTile.Field, LandTile.Field ]
             , image: 'qrc:/img/tiles/12.jpg'
-            , zones: [ makeHighwaymanZoneAt(4), makeFarmerZoneAt(6) ]
+            , zones: [ makeFarmerZoneAt(2), makeHighwaymanZoneAt(4), makeFarmerZoneAt(6) ]
         }
         , {
               edges: [ LandTile.City, LandTile.Road, LandTile.Road,  LandTile.Road ]
