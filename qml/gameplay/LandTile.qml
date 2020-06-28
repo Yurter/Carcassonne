@@ -306,7 +306,7 @@ Item {
         , {
               edges: [ LandTile.Road, LandTile.Road, LandTile.Field, LandTile.City ]
             , image: 'qrc:/img/tiles/09.jpg'
-            , zones: [ makeHighwaymanZoneAt(1), makeFarmerZoneAt(2),  makeKnightZoneAt(3), makeHighwaymanZoneAt(5), makeFarmerZoneAt(7) ]
+            , zones: [ makeHighwaymanZoneAt(1), makeFarmerZoneAt(2),  makeKnightZoneAt(3), makeFarmerZoneAt(7) ]
         }
         , {
               edges: [ LandTile.City, LandTile.City, LandTile.Road, LandTile.City  ]
