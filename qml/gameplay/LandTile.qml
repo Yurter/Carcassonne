@@ -79,17 +79,36 @@ Item {
         readonly property real zone_size: root.width / 3
 
         Repeater {
-            model: 9
+            model: {
+                const ZONES_COUNT = 9
+                var zones = new Array(ZONES_COUNT)
+                for (let i = 0; i < ZONES_COUNT; ++i) {
+                    zones[i] = { type: LandTile.None };
+                }
+                const prototype_zones = tile_prototypes[type_idx].zones
+                for (let j in prototype_zones) {
+                    const zone = prototype_zones[j]
+                    zones[parseInt(zone.pos)].type = zone.type
+                }
+                return zones
+            }
+
             delegate: Item {
                 width: tile_zones.zone_size
                 height: tile_zones.zone_size
 
                 Rectangle {
+                    visible: modelData.type !== LandTile.None
                     anchors.centerIn: parent
                     width: parent.width * 0.8
                     height: parent.height * 0.8
                     radius: width / 2
                     color: '#90FFFFFF'
+
+                    Text { // debug item
+                        text: modelData.type
+                        anchors.centerIn: parent
+                    }
                 }
             }
         }
