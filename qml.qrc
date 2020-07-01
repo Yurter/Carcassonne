@@ -35,5 +35,6 @@
         <file>qml/components/Avatar.qml</file>
         <file>img/default_avatar.png</file>
         <file>qml/components/ButtonUser.qml</file>
+        <file>qml/gameplay/Zone.qml</file>
     </qresource>
 </RCC>
